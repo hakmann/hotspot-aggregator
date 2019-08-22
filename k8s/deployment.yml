@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hotspot-aggregator
+  labels:
+    app: hotspot-aggregator
+    version: version-0.1
+    stage: dev
+    rel: beta
+    owner: dex-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotspot-aggregator
+  template:
+    metadata:
+      labels:
+        app: hotspot-aggregator
+    spec:
+      containers:
+        - name: hotspot-aggregator
+          image: dep-dev-registry.cloudzcp.io/hotspot/aggregator:0.1
+      imagePullSecrets:
+        - name: jonas-secret
