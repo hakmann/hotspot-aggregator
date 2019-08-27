@@ -14,12 +14,12 @@ public class MemberSessionController {
 
     @PostMapping("/session/{memberId}")
     public HttpEntity saveMemberSession(@PathVariable("memberId") Long memberId) {
-        redisService.saveSessionForMember(memberId);
+        redisService.saveSessionForMember(String.valueOf(memberId));
         return ResponseEntity.status(201).body(null);
     }
 
     @GetMapping("/session/{memberId}")
     public HttpEntity<String> getMemberSession(@PathVariable("memberId") Long memberId) {
-        return ResponseEntity.status(200).body(redisService.getSessionForMember(memberId) ? "TRUE" : "FALSE");
+        return ResponseEntity.status(200).body(redisService.getSessionForMember(String.valueOf(memberId)) ? "TRUE" : "FALSE");
     }
 }
