@@ -2,10 +2,7 @@ package com.sk.hotspot.aggregator.application.service;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.sk.hotspot.aggregator.application.dto.ReviewDto;
-import com.sk.hotspot.aggregator.application.dto.StoreDto;
-import com.sk.hotspot.aggregator.application.dto.StoreOutboundPayload;
-import com.sk.hotspot.aggregator.application.dto.StoreWithReviewDto;
+import com.sk.hotspot.aggregator.application.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -33,6 +30,11 @@ public class AggregatorServiceImpl implements AggregatorService {
     private String reviewHost;
     @Value("${review.findReviewByStoreId}")
     private String findReviewByStoreId;
+
+    @Override
+    public MemberDto findMemberInfoByLoginId(String loginId) {
+        return null;
+    }
 
     @Override
     public List<StoreDto> findStoreInfoByCurrentLocation(float x, float y) {
