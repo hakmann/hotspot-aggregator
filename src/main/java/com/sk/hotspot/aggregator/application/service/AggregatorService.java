@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AggregatorService {
     // Member
-    MemberDto findMemberInfoByLoginId(String loginId);
+    Long findMemberIdByLoginId(String loginId);
     LoginResponseDto login(LoginRequestDto request);
     boolean validateToken(String token);
 

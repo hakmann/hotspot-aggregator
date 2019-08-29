@@ -21,30 +21,36 @@ import java.util.stream.Collectors;
 public class AggregatorServiceImpl implements AggregatorService {
 
     @Value("${store.host}")
-    private String storeHost;
+    private String STORE_HOST;
     @Value("${store.findByLocation}")
-    private String findByLocation;
+    private String FIND_BY_LOCATION;
 
     @Value("${review.host}")
-    private String reviewHost;
+    private String REVIEW_HOST;
     @Value("${review.findReviewByStoreId}")
-    private String findReviewByStoreId;
+    private String FIND_REVIEW_BY_STORE_ID;
     @Value("${review.postReview}")
-    private String postReview;
+    private String POST_REVIEW;
 
     @Value("${member.host}")
-    private String memberHost;
+    private String MEMBER_HOST;
     @Value("${member.login}")
-    private String login;
+    private String LOGIN;
     @Value("${member.validateToken}")
-    private String validateToken;
+    private String VALIDATE_TOKEN;
+    @Value("${member.findMember}")
+    private String FIND_MEMBER;
 
     @Autowired
     private AggregatorServiceRedis aggregatorServiceRedis;
 
     @Override
-    public MemberDto findMemberInfoByLoginId(String loginId) {
-        return null;
+    public Long findMemberIdByLoginId(String loginId) {
+        // mbr/account/{id}
+        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        String response = restTemplate.getForObject("http://" + MEMBER_HOST + FIND_MEMBER.replace("{id}", loginId), String.class);
+        return parseResponseFromAccount(response);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class AggregatorServiceImpl implements AggregatorService {
         // /mbr/login/rest
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        String accessToken = restTemplate.postForObject("http://" + memberHost + login, request, String.class);
+        String accessToken = restTemplate.postForObject("http://" + MEMBER_HOST + LOGIN, request, String.class);
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .accessToken(parseResponseFromLogin(accessToken))
@@ -75,14 +81,14 @@ public class AggregatorServiceImpl implements AggregatorService {
         Map<String, String> requestMap = new HashMap<>();
         requestMap.put("token", token);
         // false가 valid!
-        return Optional.ofNullable(restTemplate.postForObject("http://" + memberHost + validateToken,requestMap, Boolean.class)).orElse(false);
+        return Optional.ofNullable(restTemplate.postForObject("http://" + MEMBER_HOST + VALIDATE_TOKEN,requestMap, Boolean.class)).orElse(false);
     }
 
     @Override
     public List<StoreDto> findStoreInfoByCurrentLocation(float x, float y) {
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        String response = restTemplate.getForObject("http://" + storeHost + findByLocation.replace("{x}", String.valueOf(x)).replace("{y}", String.valueOf(y)), String.class);
+        String response = restTemplate.getForObject("http://" + STORE_HOST + FIND_BY_LOCATION.replace("{x}", String.valueOf(x)).replace("{y}", String.valueOf(y)), String.class);
         log.debug(response);
         return parseResponseFromFindStore(response);
     }
@@ -91,7 +97,7 @@ public class AggregatorServiceImpl implements AggregatorService {
     public List<ReviewResponseDto> findReviewByStoreId(Long storeId) {
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        String response = restTemplate.getForObject("http://" + reviewHost + findReviewByStoreId.replace("{storeId}", String.valueOf(storeId)), String.class);
+        String response = restTemplate.getForObject("http://" + REVIEW_HOST + FIND_REVIEW_BY_STORE_ID.replace("{storeId}", String.valueOf(storeId)), String.class);
         log.debug(response);
         return parseResponseFromFindReview(response);
     }
@@ -100,7 +106,8 @@ public class AggregatorServiceImpl implements AggregatorService {
     public ReviewResponseDto postReview(ReviewRequestDto requestDto) {
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        ReviewResponseDto response = restTemplate.postForObject("http://" + reviewHost + postReview, requestDto, ReviewResponseDto.class);
+
+        ReviewResponseDto response = restTemplate.postForObject("http://" + REVIEW_HOST + POST_REVIEW, requestDto, ReviewResponseDto.class);
 
         return response;
     }
@@ -181,5 +188,11 @@ public class AggregatorServiceImpl implements AggregatorService {
         Gson gson = new Gson();
         LinkedTreeMap resultMap = gson.fromJson(response, LinkedTreeMap.class);
         return String.valueOf(resultMap.get("token"));
+    }
+
+    private Long parseResponseFromAccount(String response) {
+        Gson gson = new Gson();
+        LinkedTreeMap resultMap = gson.fromJson(response, LinkedTreeMap.class);
+        return Long.valueOf(String.valueOf(resultMap.get("id")));
     }
 }

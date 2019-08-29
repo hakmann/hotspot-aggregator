@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -34,7 +38,7 @@ public class WebRequestContextInterceptor implements HandlerInterceptor {
         }
 
         // redis check
-        String sessionForMember = aggregatorServiceRedis.getSessionForMember(auth[1]);
+        String sessionForMember = aggregatorServiceRedis.getLoginIdByAccessToken(auth[1]);
         // token이 없을 경우 "" (empty string)"
         if (!"".equals(sessionForMember) && !aggregatorService.validateToken(auth[1])) {
             log.debug("exists session in redis userId: {}", sessionForMember);

@@ -23,6 +23,7 @@ member:
   host: hotspot-mbr
   login: /mbr/login/rest
   validateToken: /mbr/token/chk
+  findMember: /mbr/account/{id}
 
 --- # local
 spring:
@@ -43,3 +44,4 @@ member:
   host: localhost:8083
   login: /mbr/login/rest
   validateToken: /mbr/token/chk
+  findMember: /mbr/account/{id}

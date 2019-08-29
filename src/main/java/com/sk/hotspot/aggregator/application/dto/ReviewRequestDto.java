@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewRequestDto {
     String content;
-    String customerId;
-    String storeId;
+    Long customerId;
+    Long storeId;
 }
