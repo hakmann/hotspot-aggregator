@@ -14,7 +14,7 @@ redis:
   uri: redis://O6L6ATk7Be@10.178.230.75:6379
 store:
   host: hotspot-store
-  findByLocation: /store/api/v1/store/find/location/{x}/{y}
+  findByLocation: /store/api/v1/location/{x}/{y}
 review:
   host: hotspot-evaluation
   findReviewByStoreId: /evaluation/review/store/{storeId}
@@ -29,7 +29,7 @@ redis:
 
 store:
   host: localhost:8080
-  findByLocation: /store/api/v1/store/find/location/{x}/{y}
+  findByLocation: /store/api/v1/location/{x}/{y}
 review:
   host: localhost:8082
   findReviewByStoreId: /evaluation/review/store/{storeId}
