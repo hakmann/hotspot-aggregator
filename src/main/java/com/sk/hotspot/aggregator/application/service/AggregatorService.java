@@ -14,8 +14,8 @@ public interface AggregatorService {
     List<StoreDto> findStoreInfoByCurrentLocation(float x, float y);
 
     // Review
-    List<ReviewDto> findReviewByStoreId(Long storeId);
-
+    List<ReviewResponseDto> findReviewByStoreId(Long storeId);
+    ReviewResponseDto postReview(ReviewRequestDto requestDto);
     StoreOutboundPayload findStoreInfoWithReviewByLocation(float x, float y);
 
     // mbr/login/rest,  mbr/token/chk

@@ -18,6 +18,7 @@ store:
 review:
   host: hotspot-evaluation
   findReviewByStoreId: /evaluation/review/store/{storeId}
+  postReview: /evaluation/review
 member:
   host: hotspot-mbr
   login: /mbr/login/rest
@@ -37,6 +38,7 @@ store:
 review:
   host: localhost:8082
   findReviewByStoreId: /evaluation/review/store/{storeId}
+  postReview: /evaluation/review
 member:
   host: localhost:8083
   login: /mbr/login/rest

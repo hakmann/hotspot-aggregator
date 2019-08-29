@@ -5,16 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDto {
-    //
-    Long reviewId;
-    private String content;
-    private Date registDate;
-    private Date updateDate;
+public class ReviewRequestDto {
+    String content;
+    String customerId;
+    String storeId;
 }

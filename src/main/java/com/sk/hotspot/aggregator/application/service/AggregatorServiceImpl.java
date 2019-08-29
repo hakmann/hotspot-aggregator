@@ -29,6 +29,8 @@ public class AggregatorServiceImpl implements AggregatorService {
     private String reviewHost;
     @Value("${review.findReviewByStoreId}")
     private String findReviewByStoreId;
+    @Value("${review.postReview}")
+    private String postReview;
 
     @Value("${member.host}")
     private String memberHost;
@@ -72,6 +74,7 @@ public class AggregatorServiceImpl implements AggregatorService {
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         Map<String, String> requestMap = new HashMap<>();
         requestMap.put("token", token);
+        // false가 valid!
         return Optional.ofNullable(restTemplate.postForObject("http://" + memberHost + validateToken,requestMap, Boolean.class)).orElse(false);
     }
 
@@ -85,12 +88,21 @@ public class AggregatorServiceImpl implements AggregatorService {
     }
 
     @Override
-    public List<ReviewDto> findReviewByStoreId(Long storeId) {
+    public List<ReviewResponseDto> findReviewByStoreId(Long storeId) {
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         String response = restTemplate.getForObject("http://" + reviewHost + findReviewByStoreId.replace("{storeId}", String.valueOf(storeId)), String.class);
         log.debug(response);
         return parseResponseFromFindReview(response);
+    }
+
+    @Override
+    public ReviewResponseDto postReview(ReviewRequestDto requestDto) {
+        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        ReviewResponseDto response = restTemplate.postForObject("http://" + reviewHost + postReview, requestDto, ReviewResponseDto.class);
+
+        return response;
     }
 
     @Override
@@ -148,7 +160,7 @@ public class AggregatorServiceImpl implements AggregatorService {
         }
     }
 
-    private List<ReviewDto> parseResponseFromFindReview(String response) {
+    private List<ReviewResponseDto> parseResponseFromFindReview(String response) {
         Gson gson = new Gson();
         ArrayList<LinkedTreeMap> resultMap = gson.fromJson(response, ArrayList.class);
         if (CollectionUtils.isEmpty(resultMap)) {
@@ -157,7 +169,7 @@ public class AggregatorServiceImpl implements AggregatorService {
             return resultMap.stream()
                     .map(result -> {
                         LinkedTreeMap resMap = (LinkedTreeMap) result;
-                        return ReviewDto.builder()
+                        return ReviewResponseDto.builder()
                                 .content(resMap.get("content").toString())
                                 .registDate(Date.valueOf(resMap.get("registDate").toString()))
                                 .build();

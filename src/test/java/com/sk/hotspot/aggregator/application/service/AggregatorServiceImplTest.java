@@ -1,6 +1,6 @@
 package com.sk.hotspot.aggregator.application.service;
 
-import com.sk.hotspot.aggregator.application.dto.ReviewDto;
+import com.sk.hotspot.aggregator.application.dto.ReviewResponseDto;
 import com.sk.hotspot.aggregator.application.dto.StoreDto;
 import com.sk.hotspot.aggregator.application.dto.StoreOutboundPayload;
 import com.sk.hotspot.aggregator.application.dto.StoreWithReviewDto;
@@ -43,7 +43,7 @@ public class AggregatorServiceImplTest {
         final int REVIEW_SIZE = 10;
 
         Mockito.doReturn(getReviewList(REVIEW_SIZE)).when(aggregatorService).findReviewByStoreId(Mockito.any());
-        List<ReviewDto> reviewInfo = aggregatorService.findReviewByStoreId(Mockito.any());
+        List<ReviewResponseDto> reviewInfo = aggregatorService.findReviewByStoreId(Mockito.any());
 
         assertThat(reviewInfo.size(), equalTo(REVIEW_SIZE));
     }
@@ -70,12 +70,12 @@ public class AggregatorServiceImplTest {
         return storeList;
     }
 
-    private List<ReviewDto> getReviewList(int size) {
-        List<ReviewDto> reviewDtoList = new ArrayList<>();
+    private List<ReviewResponseDto> getReviewList(int size) {
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
         for(int i = 1; i <= size; i++){
-            reviewDtoList.add(ReviewDto.builder().reviewId((long)i).content("TestContenst" + i).build());
+            reviewResponseDtoList.add(ReviewResponseDto.builder().id((long)i).content("TestContenst" + i).build());
         }
-        return reviewDtoList;
+        return reviewResponseDtoList;
     }
 
     private StoreOutboundPayload getStoreWithReview() {

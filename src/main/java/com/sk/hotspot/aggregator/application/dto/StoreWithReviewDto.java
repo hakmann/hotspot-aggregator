@@ -1,6 +1,5 @@
 package com.sk.hotspot.aggregator.application.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -9,15 +8,15 @@ import java.util.List;
 public class StoreWithReviewDto extends StoreDto{
 
     // Review
-    private List<ReviewDto> reviews;
+    private List<ReviewResponseDto> reviews;
 
     public StoreWithReviewDto(){};
 
-    public StoreWithReviewDto(List<ReviewDto> reviews) {
+    public StoreWithReviewDto(List<ReviewResponseDto> reviews) {
         this.reviews = reviews;
     }
 
-    public StoreWithReviewDto(Long storeId, String storeName, String storeCategory, String storeAddress, List<ReviewDto> reviews) {
+    public StoreWithReviewDto(Long storeId, String storeName, String storeCategory, String storeAddress, List<ReviewResponseDto> reviews) {
         super(storeId, storeName, storeCategory, storeAddress);
         this.reviews = reviews;
     }

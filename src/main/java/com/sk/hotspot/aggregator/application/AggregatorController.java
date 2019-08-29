@@ -1,8 +1,6 @@
 package com.sk.hotspot.aggregator.application;
 
-import com.sk.hotspot.aggregator.application.dto.LoginRequestDto;
-import com.sk.hotspot.aggregator.application.dto.LoginResponseDto;
-import com.sk.hotspot.aggregator.application.dto.StoreOutboundPayload;
+import com.sk.hotspot.aggregator.application.dto.*;
 import com.sk.hotspot.aggregator.application.service.AggregatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +20,10 @@ public class AggregatorController {
     @PostMapping("/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         return aggregatorService.login(loginRequestDto);
+    }
+
+    @PostMapping("/review")
+    public ReviewResponseDto postReview(@RequestBody ReviewRequestDto reviewRequestDto) {
+        return aggregatorService.postReview(reviewRequestDto);
     }
 }
