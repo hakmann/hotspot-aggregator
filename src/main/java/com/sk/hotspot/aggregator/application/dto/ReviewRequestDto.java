@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewRequestDto {
     String content;
-    Long customerId;
+    // 현재 로그인 한 사용자의 memberId를 넣음
+    //Long customerId;
     Long storeId;
 }

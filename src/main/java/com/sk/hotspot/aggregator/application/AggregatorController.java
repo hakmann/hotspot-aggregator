@@ -4,6 +4,10 @@ import com.sk.hotspot.aggregator.application.dto.*;
 import com.sk.hotspot.aggregator.application.service.AggregatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,7 +27,10 @@ public class AggregatorController {
     }
 
     @PostMapping("/review")
-    public ReviewResponseDto postReview(@RequestBody ReviewRequestDto reviewRequestDto) {
+    public ReviewResponseDto postReview(@RequestBody ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
+        ServletContext servletContext = RequestContextUtils.findWebApplicationContext(request).getServletContext();
+        Object memberId = servletContext.getAttribute("memberId");
+        reviewRequestDto.setCustomerId(Long.valueOf(memberId.toString()));
         return aggregatorService.postReview(reviewRequestDto);
     }
 }

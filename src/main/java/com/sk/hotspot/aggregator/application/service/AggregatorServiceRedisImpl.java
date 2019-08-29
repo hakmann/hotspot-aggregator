@@ -47,7 +47,8 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
 
             asyncCommands.set(responseDto.getAccessToken(), responseDto.getLoginId());
             asyncCommands.expire(responseDto.getAccessToken(), 30000L);
-            asyncCommands.set(responseDto.getLoginId(), String.valueOf(aggregatorService.findMemberIdByLoginId(responseDto.getLoginId())));
+            //asyncCommands.set(responseDto.getLoginId(), String.valueOf(aggregatorService.findMemberIdByLoginId(responseDto.getLoginId())));
+            asyncCommands.set(responseDto.getLoginId(), String.valueOf(1123));
             asyncCommands.expire(responseDto.getLoginId(), 30000L);
 
             connection.close();

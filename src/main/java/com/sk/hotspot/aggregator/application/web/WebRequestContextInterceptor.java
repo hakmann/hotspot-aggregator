@@ -38,10 +38,12 @@ public class WebRequestContextInterceptor implements HandlerInterceptor {
         }
 
         // redis check
-        String sessionForMember = aggregatorServiceRedis.getLoginIdByAccessToken(auth[1]);
+        String loginId = aggregatorServiceRedis.getLoginIdByAccessToken(auth[1]);
         // token이 없을 경우 "" (empty string)"
-        if (!"".equals(sessionForMember) && !aggregatorService.validateToken(auth[1])) {
-            log.debug("exists session in redis userId: {}", sessionForMember);
+        if (!"".equals(loginId) && !aggregatorService.validateToken(auth[1])) {
+            log.debug("exists session in redis userId: {}", loginId);
+            Long memberId = aggregatorServiceRedis.getMemberIdByLoginId(loginId);
+            RequestContextUtils.findWebApplicationContext(request).getServletContext().setAttribute("memberId", memberId);
             return true;
         }else{
             throw new RuntimeException("Invalid Access token");
