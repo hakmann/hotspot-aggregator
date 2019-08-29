@@ -12,14 +12,14 @@ public class MemberSessionController {
     @Autowired
     private AggregatorServiceRedis redisService;
 
-    @PostMapping("/session/{memberId}")
-    public HttpEntity saveMemberSession(@PathVariable("memberId") String memberId) {
-        redisService.saveSessionForMember(memberId);
-        return ResponseEntity.status(201).body(null);
-    }
-
-    @GetMapping("/session/{memberId}")
-    public HttpEntity<String> getMemberSession(@PathVariable("memberId") String memberId) {
-        return ResponseEntity.status(200).body(redisService.getSessionForMember(memberId) ? "TRUE" : "FALSE");
-    }
+//    @PostMapping("/session/{memberId}")
+//    public HttpEntity saveMemberSession(@PathVariable("memberId") String memberId) {
+//        redisService.saveSessionForMember(memberId);
+//        return ResponseEntity.status(201).body(null);
+//    }
+//
+//    @GetMapping("/session/{memberId}")
+//    public HttpEntity<String> getMemberSession(@PathVariable("memberId") String memberId) {
+//        return ResponseEntity.status(200).body(redisService.getSessionForMember(memberId) ? "TRUE" : "FALSE");
+//    }
 }

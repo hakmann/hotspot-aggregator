@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.sk.hotspot.aggregator.application.dto.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -12,9 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,9 +30,49 @@ public class AggregatorServiceImpl implements AggregatorService {
     @Value("${review.findReviewByStoreId}")
     private String findReviewByStoreId;
 
+    @Value("${member.host}")
+    private String memberHost;
+    @Value("${member.login}")
+    private String login;
+    @Value("${member.validateToken}")
+    private String validateToken;
+
+    @Autowired
+    private AggregatorServiceRedis aggregatorServiceRedis;
+
     @Override
     public MemberDto findMemberInfoByLoginId(String loginId) {
         return null;
+    }
+
+    @Override
+    public LoginResponseDto login(LoginRequestDto request) {
+        // Member Domain의 로그인 수행
+        // /mbr/login/rest
+        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        String accessToken = restTemplate.postForObject("http://" + memberHost + login, request, String.class);
+
+        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                .accessToken(parseResponseFromLogin(accessToken))
+                .loginId(request.getUsername())
+                .build();
+
+        // save to redis
+        aggregatorServiceRedis.saveSessionForMember(loginResponseDto);
+
+        return loginResponseDto;
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        // Member Domain의 token 유효성 검증
+        // /mbr/token/chk
+        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        Map<String, String> requestMap = new HashMap<>();
+        requestMap.put("token", token);
+        return Optional.ofNullable(restTemplate.postForObject("http://" + memberHost + validateToken,requestMap, Boolean.class)).orElse(false);
     }
 
     @Override
@@ -124,5 +163,11 @@ public class AggregatorServiceImpl implements AggregatorService {
                                 .build();
                     }).collect(Collectors.toList());
         }
+    }
+
+    private String parseResponseFromLogin(String response) {
+        Gson gson = new Gson();
+        LinkedTreeMap resultMap = gson.fromJson(response, LinkedTreeMap.class);
+        return String.valueOf(resultMap.get("token"));
     }
 }

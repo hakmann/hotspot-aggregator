@@ -18,6 +18,10 @@ store:
 review:
   host: hotspot-evaluation
   findReviewByStoreId: /evaluation/review/store/{storeId}
+member:
+  host: hotspot-mbr
+  login: /mbr/login/rest
+  validateToken: /mbr/token/chk
 
 --- # local
 spring:
@@ -33,3 +37,7 @@ store:
 review:
   host: localhost:8082
   findReviewByStoreId: /evaluation/review/store/{storeId}
+member:
+  host: localhost:8083
+  login: /mbr/login/rest
+  validateToken: /mbr/token/chk

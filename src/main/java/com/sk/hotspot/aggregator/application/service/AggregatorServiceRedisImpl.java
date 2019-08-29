@@ -1,5 +1,6 @@
 package com.sk.hotspot.aggregator.application.service;
 
+import com.sk.hotspot.aggregator.application.dto.LoginResponseDto;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisFuture;
@@ -24,24 +25,24 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
     private String REDIS_URI;
 
     @Override
-    public void saveSessionForMember(String memberId) {
+    public void saveSessionForMember(LoginResponseDto responseDto) {
         // User Session
-        // TODO: validate MemberId
-
-
         RedisAsyncCommands<String, String> asyncCommands = null;
         try {
             RedisClient redisClient = RedisClient.create(REDIS_URI);
             StatefulRedisConnection<String, String> connection = redisClient.connect();
             asyncCommands = connection.async();
             // 1. Simple String(key:value)
-            RedisFuture<String> redisResult = asyncCommands.get(memberId);
+            RedisFuture<String> redisResult = asyncCommands.get(responseDto.getAccessToken());
             String cached = redisResult.get(3, TimeUnit.SECONDS);
-            if(StringUtils.isEmpty(cached)) {
-                asyncCommands.set(memberId, LocalDateTime.now().toString());
+
+            // cache된 세션이 있다면 삭제 후 다시 넣음.
+            if(!StringUtils.isEmpty(cached)) {
+                asyncCommands.del(responseDto.getAccessToken());
             }
 
-            asyncCommands.expire(String.valueOf(memberId), 30000L);
+            asyncCommands.set(responseDto.getAccessToken(), responseDto.getLoginId());
+            asyncCommands.expire(responseDto.getAccessToken(), 30000L);
             connection.close();
         } catch(RedisConnectionException ex) {
             // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
@@ -85,34 +86,31 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
     }
 
     @Override
-    public boolean getSessionForMember(String memberId) {
+    public String getSessionForMember(String accessToken) {
         RedisAsyncCommands<String, String> asyncCommands = null;
-        boolean existSession = false;
         try {
             RedisClient redisClient = RedisClient.create(REDIS_URI);
             StatefulRedisConnection<String, String> connection = redisClient.connect();
             asyncCommands = connection.async();
 
-            RedisFuture<String> redisResult = asyncCommands.get(memberId);
-            String cached = redisResult.get(3, TimeUnit.SECONDS);
-            if (!StringUtils.isEmpty(cached)) {
-                existSession = true;
-            }
+            RedisFuture<String> redisResult = asyncCommands.get(accessToken);
+            String token = redisResult.get(3, TimeUnit.SECONDS);
             connection.close();
 
-            return existSession;
+            return token;
+
         } catch(RedisConnectionException ex) {
             asyncCommands = null;
-            return existSession;
+            return "";
         } catch(ExecutionException ex) {
             asyncCommands = null;
-            return existSession;
+            return "";
         } catch(InterruptedException ex) {
             asyncCommands = null;
-            return existSession;
+            return "";
         } catch(TimeoutException ex) {
             asyncCommands = null;
-            return existSession;
+            return "";
         }
     }
 }

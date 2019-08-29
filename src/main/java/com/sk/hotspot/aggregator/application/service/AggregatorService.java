@@ -1,15 +1,14 @@
 package com.sk.hotspot.aggregator.application.service;
 
-import com.sk.hotspot.aggregator.application.dto.MemberDto;
-import com.sk.hotspot.aggregator.application.dto.ReviewDto;
-import com.sk.hotspot.aggregator.application.dto.StoreDto;
-import com.sk.hotspot.aggregator.application.dto.StoreOutboundPayload;
+import com.sk.hotspot.aggregator.application.dto.*;
 
 import java.util.List;
 
 public interface AggregatorService {
     // Member
     MemberDto findMemberInfoByLoginId(String loginId);
+    LoginResponseDto login(LoginRequestDto request);
+    boolean validateToken(String token);
 
     // Store
     List<StoreDto> findStoreInfoByCurrentLocation(float x, float y);
@@ -18,4 +17,6 @@ public interface AggregatorService {
     List<ReviewDto> findReviewByStoreId(Long storeId);
 
     StoreOutboundPayload findStoreInfoWithReviewByLocation(float x, float y);
+
+    // mbr/login/rest,  mbr/token/chk
 }

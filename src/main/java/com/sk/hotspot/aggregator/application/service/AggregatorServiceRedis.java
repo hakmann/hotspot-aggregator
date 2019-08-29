@@ -1,7 +1,9 @@
 package com.sk.hotspot.aggregator.application.service;
 
+import com.sk.hotspot.aggregator.application.dto.LoginResponseDto;
+
 public interface AggregatorServiceRedis {
-    void saveSessionForMember(String memberId);
+    void saveSessionForMember(LoginResponseDto loginResponseDto);
     void saveFavoriteStoreList();
-    boolean getSessionForMember(String memberId);
+    String getSessionForMember(String accessToken);
 }
