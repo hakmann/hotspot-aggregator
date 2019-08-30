@@ -14,9 +14,9 @@ import java.util.Date;
 public class ReviewResponseDto {
     //
     Long id;
-    Long customerId;
-    Long storeId;
+    //Long customerId;
+    //Long storeId;
     private String content;
-    private Date registDate;
-    private Date updateDate;
+    //private Date registDate;
+    //private Date updateDate;
 }

@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -177,8 +178,10 @@ public class AggregatorServiceImpl implements AggregatorService {
                     .map(result -> {
                         LinkedTreeMap resMap = (LinkedTreeMap) result;
                         return ReviewResponseDto.builder()
+                                //.customerId(Long.valueOf(resMap.get("customerId").toString()))
+                                //.storeId(Long.valueOf(resMap.get("storeId").toString()))
+                                //.id(Long.valueOf(resMap.get("id").toString()))
                                 .content(resMap.get("content").toString())
-                                .registDate(Date.valueOf(resMap.get("registDate").toString()))
                                 .build();
                     }).collect(Collectors.toList());
         }
