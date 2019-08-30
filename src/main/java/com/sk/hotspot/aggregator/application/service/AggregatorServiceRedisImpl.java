@@ -55,15 +55,10 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
         } catch(RedisConnectionException ex) {
             // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
             asyncCommands = null;
-        } catch(ExecutionException ex) {
+        } catch(ExecutionException | InterruptedException | TimeoutException ex) {
             // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
             asyncCommands = null;
-        } catch(InterruptedException ex) {
-            // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
-            asyncCommands = null;
-        } catch(TimeoutException ex) {
-            // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
-            asyncCommands = null;
+            ex.printStackTrace();
         }
     }
 
@@ -84,11 +79,8 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
             connection.close();
         } catch(RedisConnectionException ex) {
             asyncCommands = null;
-        } catch(ExecutionException ex) {
-            asyncCommands = null;
-        } catch(InterruptedException ex) {
-            asyncCommands = null;
-        } catch(TimeoutException ex) {
+        } catch(ExecutionException | InterruptedException | TimeoutException ex) {
+            ex.printStackTrace();
             asyncCommands = null;
         }
     }
@@ -110,14 +102,9 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
         } catch(RedisConnectionException ex) {
             asyncCommands = null;
             return "";
-        } catch(ExecutionException ex) {
+        } catch(ExecutionException | InterruptedException | TimeoutException ex) {
             asyncCommands = null;
-            return "";
-        } catch(InterruptedException ex) {
-            asyncCommands = null;
-            return "";
-        } catch(TimeoutException ex) {
-            asyncCommands = null;
+            ex.printStackTrace();
             return "";
         }
     }
@@ -140,17 +127,10 @@ public class AggregatorServiceRedisImpl implements AggregatorServiceRedis {
             // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
             asyncCommands = null;
             return 0L;
-        } catch(ExecutionException ex) {
+        } catch(ExecutionException | InterruptedException | TimeoutException ex) {
             // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
             asyncCommands = null;
-            return 0L;
-        } catch(InterruptedException ex) {
-            // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
-            asyncCommands = null;
-            return 0L;
-        } catch(TimeoutException ex) {
-            // redis 접속 장애시, redis 인증은 안된 걸로 생각하고 다음으로 넘어감
-            asyncCommands = null;
+            ex.printStackTrace();
             return 0L;
         }
     }
